@@ -1,7 +1,6 @@
 const form = document.getElementById("intake-form");
 const payloadPreview = document.getElementById("payload-preview");
 const promptPreview = document.getElementById("prompt-preview");
-const copyPromptButton = document.getElementById("copy-prompt");
 const downloadSummaryButton = document.getElementById("download-summary");
 const liveOutput = document.getElementById("live-output");
 let latestSummaryDocument = "";
@@ -307,21 +306,6 @@ form.addEventListener("submit", (event) => {
 
 form.addEventListener("input", render);
 form.addEventListener("change", render);
-
-copyPromptButton.addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(promptPreview.textContent);
-    copyPromptButton.textContent = "Prompt Copied";
-    setTimeout(() => {
-      copyPromptButton.textContent = "Copy Prompt";
-    }, 1400);
-  } catch (error) {
-    copyPromptButton.textContent = "Copy Failed";
-    setTimeout(() => {
-      copyPromptButton.textContent = "Copy Prompt";
-    }, 1400);
-  }
-});
 
 downloadSummaryButton.addEventListener("click", () => {
   if (!latestSummaryDocument) {
