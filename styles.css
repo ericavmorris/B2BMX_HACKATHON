@@ -182,6 +182,12 @@ button[type="submit"] {
   background: rgba(28, 24, 20, 0.08);
 }
 
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  transform: none;
+}
+
 .code-block {
   margin: 0;
   padding: 20px 24px 24px;
@@ -278,6 +284,13 @@ button[type="submit"] {
 .email-block {
   padding: 16px 0;
   border-top: 1px solid var(--line);
+}
+
+.visual-note {
+  padding: 12px 14px;
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  background: rgba(177, 77, 45, 0.08);
 }
 
 .message-block:first-of-type,

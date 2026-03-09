@@ -2,7 +2,9 @@ const form = document.getElementById("intake-form");
 const payloadPreview = document.getElementById("payload-preview");
 const promptPreview = document.getElementById("prompt-preview");
 const copyPromptButton = document.getElementById("copy-prompt");
+const downloadSummaryButton = document.getElementById("download-summary");
 const liveOutput = document.getElementById("live-output");
+let latestSummaryDocument = "";
 
 function fileNames(files) {
   return Array.from(files || []).map((file) => file.name);
@@ -93,6 +95,42 @@ function buildPrompt(payload) {
   ].join("\n");
 }
 
+function buildSummaryDownload(payload) {
+  const role = payload.target_audience.role_title;
+  const industry = payload.target_audience.industry;
+  const action = payload.campaign_inputs.desired_action;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fleetio Executive Summary</title>
+  <style>
+    @page { size: letter; margin: 0.5in; }
+    body { font-family: Georgia, "Times New Roman", serif; color: #1c1814; margin: 0; }
+    .page { width: 7.5in; min-height: 10in; margin: 0 auto; }
+    h1 { font-size: 22px; line-height: 1.1; margin: 0 0 14px; }
+    p { font-size: 12.5px; line-height: 1.42; margin: 0 0 10px; }
+    .takeaway { margin: 0 0 10px; }
+    .cta { margin-top: 14px; padding-top: 10px; border-top: 1px solid #c8b9a7; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>Fleet performance is being squeezed by cost, coordination, and manual work</h1>
+    <p>For ${role}s in ${industry}, the Fleetio benchmark shows that the core issue is not a single broken function. It is compounded operating drag. Fleetio’s report combines survey input from more than 600 verified fleet professionals with aggregated benchmark data across more than 1 million vehicles, 17.49B miles, and $7B in service spend, making it a useful planning lens rather than a narrow point-in-time opinion [Fleetio 2026, Methodology].</p>
+    <p class="takeaway"><strong>Pressure is stacking across the operating model.</strong> Rising costs were the top concern for 54.4% of respondents, followed by regulations and emissions mandates at 46.1%, EV transition and infrastructure at 35.1%, technician shortages at 32.5%, and parts and vehicle availability at 28.9% [The Squeeze, p.9]. The implication is that performance pressure is showing up in cost, compliance, staffing, and turnaround at the same time.</p>
+    <p class="takeaway"><strong>Most fleets are operating in the maintenance middle.</strong> 44.3% of respondents say they do a decent job but still have room for improvement, while 48.0% say their maintenance mix is half scheduled and half unscheduled [The Maintenance Middle, pp.10-11]. That suggests many teams know what good looks like, but process consistency is still weak enough to create ongoing leakage.</p>
+    <p class="takeaway"><strong>Execution bottlenecks are driven by coordination, not ignorance.</strong> Fleetio frames missed performance less as a knowledge problem and more as a timing, communication, and visibility problem [The Coordination Bottleneck, p.13]. That matters for leaders because operational improvement may come faster from workflow discipline than from adding another reporting layer.</p>
+    <p class="takeaway"><strong>Manual admin work is still a major drag on performance.</strong> 79.3% of fleet managers say they enter fleet data themselves, and a meaningful share spend 4-8 hours or more each week on manual entry [Modern Tools, Manual Reality, pp.15-17]. High software adoption has not eliminated the admin burden, which means data quality and decision speed are still exposed to human bottlenecks.</p>
+    <p class="takeaway"><strong>Near-term AI value is in low-risk support, not autonomous decision-making.</strong> 35.1% of fleets are researching AI, 18.2% are piloting it, and only 5.6% say they use it broadly. Just 1.5% completely trust AI recommendations without human review [AI Wanted, Not Trusted, pp.20-21]. The near-term opportunity is practical automation and tighter visibility, not fully delegated operational judgment.</p>
+    <p>The strongest strategic use of this benchmark is to identify one or two operating levers for the next 90 days: reactive maintenance mix, coordination delays, manual data entry, or hybrid vendor complexity. Fleetio’s own guidance is to choose measurable progress over broad transformation claims [How to Use This Report].</p>
+    <p class="cta">CTA: Use the Fleetio benchmark to isolate the biggest operational leak, then ${action.toLowerCase()} around that specific gap.</p>
+  </main>
+</body>
+</html>`;
+}
+
 function buildLiveOutput(payload) {
   const role = payload.target_audience.role_title;
   const industry = payload.target_audience.industry;
@@ -151,7 +189,9 @@ function buildLiveOutput(payload) {
       preview: "Fleetio’s latest benchmark shows where the squeeze is showing up first.",
       body: `{{first_name}},\n\nI’ve been reviewing Fleetio’s 2026 benchmark report and one pattern is hard to ignore: the pressure on fleet teams is stacking, not shifting. Rising costs led the concern list, but they sit next to compliance pressure, infrastructure questions, technician shortages, and parts availability.\n\nThat combination matters because it creates drag even when the operation looks stable from the outside. The report’s framing is blunt: many fleets are doing okay, but still paying a steady tax in reactive work, coordination delays, and admin overhead.\n\nIf you’re looking at this from a ${role} seat, that’s useful because it turns a general “efficiency” conversation into a more specific operating question: where is the friction compounding fastest inside {{company}} today?\n\nI put together a short summary of the benchmark sections most relevant to ${industry} teams. Happy to send it over if that would be useful.`,
       cta: `Reply with "send it" and I’ll share the summary.`,
-      timing: "Send immediately after connection or first touch."
+      timing: "Send immediately after connection or first touch.",
+      visual: "Attach a one-page benchmark snapshot with the top five pressure categories highlighted.",
+      specs: "Letter-sized PDF or PNG preview, clean white background, one bar chart plus one pull quote."
     },
     {
       label: "Email 2 of 5",
@@ -160,7 +200,9 @@ function buildLiveOutput(payload) {
       preview: "The expensive issue usually isn’t failure. It’s tolerated inconsistency.",
       body: `{{first_name}},\n\nOne of the better sections in the Fleetio benchmark focuses on what they call the maintenance middle.\n\n44.3% of respondents say they do a decent job on maintenance but still have room for improvement. Another 48.0% say their work is split roughly half scheduled and half unscheduled.\n\nThat is a useful warning sign. It usually means the team knows what good looks like, but execution keeps drifting because scheduling, communication, and follow-through aren’t consistent enough.\n\nThat kind of environment rarely creates one obvious fire. Instead, it creates a constant flow of smaller misses that pull time out of planning, service coordination, and reporting.\n\nIf that sounds familiar at {{company}}, the benchmark is worth reading less as an industry snapshot and more as a way to isolate which leak is costing you the most right now.`,
       cta: "Want the 3 sections I’d prioritize first?",
-      timing: "Send 3 days after Email 1."
+      timing: "Send 3 days after Email 1.",
+      visual: "Inline chart showing the maintenance-middle split between decent, good, and great performance.",
+      specs: "1200x627 chart image, three bars, muted palette, one callout on the 44.3% midpoint."
     },
     {
       label: "Email 3 of 5",
@@ -169,7 +211,9 @@ function buildLiveOutput(payload) {
       preview: "High software adoption does not mean low admin burden.",
       body: `{{first_name}},\n\nA stat from Fleetio’s report that deserves more attention: 79.3% of fleet managers say they enter fleet data themselves.\n\nThat explains a lot.\n\nThe benchmark’s point is not that fleets lack systems. It is that many modern operations still run on software plus spreadsheets plus paper, which keeps the admin load high and weakens the quality of the data teams rely on.\n\nOnce that happens, even good people end up making decisions off incomplete visibility. Work takes longer to coordinate. Exceptions pile up. Reporting becomes something the team has to catch up on instead of something they can trust in real time.\n\nFor teams trying to improve uptime or control service spend, reducing manual drag may be the highest-leverage move before any larger transformation project.`,
       cta: `If helpful, I can send a one-page breakdown of the manual-work findings and the 90-day levers Fleetio suggests.`,
-      timing: "Send 4 days after Email 2."
+      timing: "Send 4 days after Email 2.",
+      visual: "Mini infographic showing manual-entry burden by hours per week.",
+      specs: "Narrow infographic, 1080x1350, four data points, simple icons for spreadsheet, paper, and system entry."
     },
     {
       label: "Email 4 of 5",
@@ -178,7 +222,9 @@ function buildLiveOutput(payload) {
       preview: "Most fleets are not fully in-house or fully outsourced.",
       body: `{{first_name}},\n\nAnother part of the Fleetio report that stands out is the section on outsourcing.\n\n48.9% of fleets say they operate with a mix of in-house and third-party maintenance. That makes sense from a capacity standpoint, but it also raises the coordination burden. Vendor mix, work prioritization, and communication discipline suddenly matter a lot more.\n\nThe report does a good job showing why some teams feel like they are solving one bottleneck while creating another. Outsourcing can relieve pressure, but it also increases process complexity if the underlying workflow is already loose.\n\nThat is why the strongest operators in the report seem to separate themselves less through heroic effort and more through repeatable process and better data discipline.\n\nIf {{company}} is running a hybrid maintenance model, this section is worth a look.`,
       cta: "Should I send over the hybrid-model summary?",
-      timing: "Send 5 days after Email 3."
+      timing: "Send 5 days after Email 3.",
+      visual: "Comparison visual showing in-house, hybrid, and outsourced models with hybrid emphasized.",
+      specs: "Single image, 1080x1080, three-column layout, hybrid column highlighted in accent color."
     },
     {
       label: "Email 5 of 5",
@@ -187,7 +233,9 @@ function buildLiveOutput(payload) {
       preview: "Fleetio’s data gives a practical way to pick the next operating lever.",
       body: `{{first_name}},\n\nLast note from me.\n\nWhat I like about the Fleetio benchmark is that it does not pretend every fleet needs a broad transformation plan. The practical advice is narrower: pick one or two levers for the next 90 days and focus on measurable progress.\n\nGiven what the report shows about cost pressure, coordination bottlenecks, manual entry burden, and mixed scheduled versus unscheduled work, there is usually one issue creating a disproportionate amount of friction.\n\nIf you are open to it, I can walk you through a short benchmark-based view of where teams like {{company}} typically start. Even a 15-minute conversation should be enough to identify whether the biggest opportunity is in maintenance planning, admin reduction, vendor coordination, or data discipline.`,
       cta: `Open to a short call next week to compare notes?`,
-      timing: "Send 6 days after Email 4."
+      timing: "Send 6 days after Email 4.",
+      visual: "Decision slide with four improvement levers: planning, admin reduction, vendor coordination, data discipline.",
+      specs: "Presentation-style slide, 1600x900, quadrant layout, built for email attachment or follow-up deck."
     }
   ];
 
@@ -216,6 +264,10 @@ function buildLiveOutput(payload) {
           <p><strong>Subject:</strong> ${email.subject}</p>
           <p><strong>Preview:</strong> ${email.preview}</p>
           <p>${email.body.replace(/\n\n/g, "</p><p>")}</p>
+          <div class="visual-note">
+            <p><strong>Graphic recommendation:</strong> ${email.visual}</p>
+            <p><strong>Graphic specs:</strong> ${email.specs}</p>
+          </div>
           <p><strong>CTA:</strong> ${email.cta}</p>
           <p><strong>Timing:</strong> ${email.timing}</p>
         </div>
@@ -242,6 +294,8 @@ function render() {
   const payload = buildPayload();
   payloadPreview.textContent = JSON.stringify(payload, null, 2);
   promptPreview.textContent = buildPrompt(payload);
+  latestSummaryDocument = buildSummaryDownload(payload);
+  downloadSummaryButton.disabled = false;
   buildLiveOutput(payload);
 }
 
@@ -267,6 +321,22 @@ copyPromptButton.addEventListener("click", async () => {
       copyPromptButton.textContent = "Copy Prompt";
     }, 1400);
   }
+});
+
+downloadSummaryButton.addEventListener("click", () => {
+  if (!latestSummaryDocument) {
+    return;
+  }
+
+  const blob = new Blob([latestSummaryDocument], { type: "text/html;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "fleetio-executive-summary.html";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 });
 
 render();
