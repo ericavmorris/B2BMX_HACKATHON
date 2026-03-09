@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Content-to-Campaign Intake</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">Campaign Agent Intake</p>
+        <h1>Upload source assets. Lock the audience. Generate a clean agent payload.</h1>
+        <p class="lede">
+          This intake layer is aligned to the output spec extracted from
+          <code>Prompt.pdf</code> and narrowed to your required deliverables:
+          <strong>3 LinkedIn messages</strong>, <strong>5 emails</strong>, and
+          <strong>1 executive summary</strong>. Fleetio is the primary asset in
+          this MVP.
+        </p>
+      </section>
+
+      <section class="grid">
+        <form id="intake-form" class="panel form-panel">
+          <div class="panel-head">
+            <h2>Inputs</h2>
+            <p>Everything here maps directly into the agent prompt and JSON payload.</p>
+          </div>
+
+          <label class="field field-upload">
+            <span>Assets</span>
+            <input id="assets" type="file" accept=".pdf" multiple />
+            <small>Upload one or more source PDFs. Fleetio stays the primary source if present.</small>
+          </label>
+
+          <div class="field-grid">
+            <label class="field">
+              <span>Segment</span>
+              <select id="segment">
+                <option>SaaS</option>
+                <option>Manufacturing</option>
+                <option>Logistics</option>
+                <option>Financial Services</option>
+                <option>Healthcare</option>
+                <option>Other</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Industry</span>
+              <select id="industry">
+                <option>Fleet Management</option>
+                <option>Print Automation</option>
+                <option>B2B Technology</option>
+                <option>Operations</option>
+                <option>Professional Services</option>
+                <option>Other</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Role / Title</span>
+              <select id="role_title">
+                <option>VP Marketing</option>
+                <option>CMO</option>
+                <option>Demand Gen Director</option>
+                <option>Revenue Operations Lead</option>
+                <option>Operations Director</option>
+                <option>Other</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Revenue</span>
+              <select id="revenue_range">
+                <option>$10M-$50M</option>
+                <option>$50M-$250M</option>
+                <option>$250M-$1B</option>
+                <option>$1B+</option>
+                <option>Unknown</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Employee Size</span>
+              <select id="employee_size">
+                <option>50-200</option>
+                <option>200-500</option>
+                <option>500-1,000</option>
+                <option>1,000-5,000</option>
+                <option>5,000+</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Awareness Stage</span>
+              <select id="awareness_stage">
+                <option>Problem-aware</option>
+                <option>Solution-aware</option>
+                <option>Product-aware</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Desired Action</span>
+            <input id="desired_action" type="text" value="Book a meeting" />
+          </label>
+
+          <label class="field">
+            <span>Brand Voice Notes</span>
+            <textarea id="brand_voice_notes" rows="3">Confident, direct, light on buzzwords, written like a sharp operator rather than a corporate team.</textarea>
+          </label>
+
+          <label class="field">
+            <span>Campaign Context</span>
+            <textarea id="campaign_context" rows="3">Evergreen outbound motion repurposing uploaded thought-leadership assets into sales-supporting outreach.</textarea>
+          </label>
+
+          <div class="actions">
+            <button type="submit">Generate Agent Payload + Draft Outputs</button>
+            <button type="button" id="copy-prompt" class="button-secondary">Copy Prompt</button>
+          </div>
+        </form>
+
+        <section class="panel output-panel">
+          <div class="panel-head">
+            <h2>Agent Payload</h2>
+            <p>Use this JSON as the handoff contract for your backend agent.</p>
+          </div>
+          <pre id="payload-preview" class="code-block"></pre>
+        </section>
+      </section>
+
+      <section class="grid bottom-grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Prompt Preview</h2>
+            <p>The runtime instruction block generated from the intake selections.</p>
+          </div>
+          <pre id="prompt-preview" class="code-block prompt-block"></pre>
+        </section>
+
+        <section class="panel deliverables-panel">
+          <div class="panel-head">
+            <h2>Locked Deliverables</h2>
+            <p>This mirrors the revised agent behavior.</p>
+          </div>
+          <ul class="deliverables">
+            <li><strong>Executive Summary:</strong> exactly 1 output, 500-600 words, source-cited.</li>
+            <li><strong>Emails:</strong> exactly 5 messages with subjects, previews, CTA, timing, and personalization tokens.</li>
+            <li><strong>LinkedIn Messages:</strong> exactly 3 outreach messages with visual recommendations and specs.</li>
+            <li><strong>Source Audit:</strong> thesis, pillars, data points, quotables, jargon, and gaps before generation.</li>
+          </ul>
+        </section>
+      </section>
+
+      <section class="panel live-panel">
+        <div class="panel-head">
+          <h2>Generated Outputs</h2>
+          <p>Frontend-generated MVP drafts grounded in the Fleetio benchmark report.</p>
+        </div>
+        <div id="live-output" class="live-output"></div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

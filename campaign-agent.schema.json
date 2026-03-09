@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ContentToCampaignAgentOutput",
+  "type": "object",
+  "required": [
+    "source_audit",
+    "audience_translation",
+    "executive_summary",
+    "emails",
+    "linkedin_messages"
+  ],
+  "properties": {
+    "source_audit": {
+      "type": "object",
+      "required": [
+        "core_thesis",
+        "supporting_pillars",
+        "key_data_points",
+        "quotable_moments",
+        "jargon_inventory",
+        "content_gaps"
+      ],
+      "properties": {
+        "core_thesis": {
+          "type": "string"
+        },
+        "supporting_pillars": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "key_data_points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "claim",
+              "source_reference"
+            ],
+            "properties": {
+              "claim": {
+                "type": "string"
+              },
+              "source_reference": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "quotable_moments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "jargon_inventory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "term",
+              "plain_english"
+            ],
+            "properties": {
+              "term": {
+                "type": "string"
+              },
+              "plain_english": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "content_gaps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "audience_translation": {
+      "type": "object",
+      "required": [
+        "primary_pain_points",
+        "message_angle",
+        "tone_adjustments",
+        "audience_source_mismatches"
+      ],
+      "properties": {
+        "primary_pain_points": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "message_angle": {
+          "type": "string"
+        },
+        "tone_adjustments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "audience_source_mismatches": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "executive_summary": {
+      "type": "object",
+      "required": [
+        "headline",
+        "context",
+        "key_takeaways",
+        "closing_cta"
+      ],
+      "properties": {
+        "headline": {
+          "type": "string"
+        },
+        "context": {
+          "type": "string"
+        },
+        "key_takeaways": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "required": [
+              "claim",
+              "support",
+              "source_reference"
+            ],
+            "properties": {
+              "claim": {
+                "type": "string"
+              },
+              "support": {
+                "type": "string"
+              },
+              "source_reference": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "closing_cta": {
+          "type": "string"
+        }
+      }
+    },
+    "emails": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "sequence_number",
+          "objective",
+          "subject_line",
+          "alternate_subject_line",
+          "preview_text",
+          "body_copy",
+          "cta",
+          "send_timing",
+          "personalization_tokens",
+          "why_it_works"
+        ],
+        "properties": {
+          "sequence_number": {
+            "type": "integer"
+          },
+          "objective": {
+            "type": "string"
+          },
+          "subject_line": {
+            "type": "string"
+          },
+          "alternate_subject_line": {
+            "type": "string"
+          },
+          "preview_text": {
+            "type": "string"
+          },
+          "body_copy": {
+            "type": "string"
+          },
+          "cta": {
+            "type": "string"
+          },
+          "send_timing": {
+            "type": "string"
+          },
+          "personalization_tokens": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "why_it_works": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "linkedin_messages": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": [
+          "message_number",
+          "strategic_angle",
+          "message_copy",
+          "best_fit_use_case",
+          "visual_recommendation",
+          "cta",
+          "why_it_works"
+        ],
+        "properties": {
+          "message_number": {
+            "type": "integer"
+          },
+          "strategic_angle": {
+            "type": "string"
+          },
+          "message_copy": {
+            "type": "string"
+          },
+          "best_fit_use_case": {
+            "type": "string"
+          },
+          "visual_recommendation": {
+            "type": "object",
+            "required": [
+              "format",
+              "concept",
+              "rationale",
+              "specs",
+              "asset_dependency"
+            ],
+            "properties": {
+              "format": {
+                "type": "string",
+                "enum": [
+                  "single_image",
+                  "carousel",
+                  "document_snippet",
+                  "chart",
+                  "quote_card"
+                ]
+              },
+              "concept": {
+                "type": "string"
+              },
+              "rationale": {
+                "type": "string"
+              },
+              "specs": {
+                "type": "string"
+              },
+              "asset_dependency": {
+                "type": "string"
+              }
+            }
+          },
+          "cta": {
+            "type": "string"
+          },
+          "why_it_works": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
