@@ -2,7 +2,13 @@ const form = document.getElementById("intake-form");
 const payloadPreview = document.getElementById("payload-preview");
 const promptPreview = document.getElementById("prompt-preview");
 const downloadSummaryButton = document.getElementById("download-summary");
-const liveOutput = document.getElementById("live-output");
+const summaryOutput = document.getElementById("summary-output");
+const linkedinOutput = document.getElementById("linkedin-output");
+const emailsOutput = document.getElementById("emails-output");
+const tabButtons = document.querySelectorAll("[data-tab-target]");
+const tabPanels = document.querySelectorAll(".tab-panel");
+const subtabButtons = document.querySelectorAll("[data-subtab-target]");
+const subtabPanels = document.querySelectorAll(".subtab-panel");
 let latestSummaryDocument = "";
 
 function fileNames(files) {
@@ -241,7 +247,7 @@ function buildLiveOutput(payload) {
   const linkedinHtml = linkedinMessages
     .map(
       (message) => `
-        <div class="message-block">
+        <section class="output-section message-block">
           <span class="eyebrow-label">${message.title}</span>
           <h4>${message.angle}</h4>
           <p>${message.copy.replace(/\n\n/g, "</p><p>")}</p>
@@ -249,7 +255,7 @@ function buildLiveOutput(payload) {
           <p><strong>Visual specs:</strong> ${message.specs}</p>
           <p><strong>CTA:</strong> ${message.cta}</p>
           <p><strong>Why it works:</strong> ${message.why}</p>
-        </div>
+        </section>
       `
     )
     .join("");
@@ -257,7 +263,7 @@ function buildLiveOutput(payload) {
   const emailHtml = emails
     .map(
       (email) => `
-        <div class="email-block">
+        <section class="output-section email-block">
           <span class="eyebrow-label">${email.label}</span>
           <h4>${email.purpose}</h4>
           <p><strong>Subject:</strong> ${email.subject}</p>
@@ -269,24 +275,50 @@ function buildLiveOutput(payload) {
           </div>
           <p><strong>CTA:</strong> ${email.cta}</p>
           <p><strong>Timing:</strong> ${email.timing}</p>
-        </div>
+        </section>
       `
     )
     .join("");
 
-  liveOutput.innerHTML = `
-    ${execSummary}
+  summaryOutput.innerHTML = execSummary;
+  linkedinOutput.innerHTML = `
     <section class="output-section">
       <span class="eyebrow-label">LinkedIn Messages</span>
       <h3>3 outreach messages with visual recommendations</h3>
-      ${linkedinHtml}
     </section>
+    ${linkedinHtml}
+  `;
+  emailsOutput.innerHTML = `
     <section class="output-section">
       <span class="eyebrow-label">Email Sequence</span>
       <h3>5-email draft grounded in Fleetio benchmark data</h3>
-      ${emailHtml}
     </section>
+    ${emailHtml}
   `;
+}
+
+function activateTab(targetId) {
+  tabButtons.forEach((button) => {
+    const active = button.dataset.tabTarget === targetId;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+
+  tabPanels.forEach((panel) => {
+    panel.classList.toggle("is-active", panel.id === targetId);
+  });
+}
+
+function activateSubtab(targetId) {
+  subtabButtons.forEach((button) => {
+    const active = button.dataset.subtabTarget === targetId;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+
+  subtabPanels.forEach((panel) => {
+    panel.classList.toggle("is-active", panel.id === targetId);
+  });
 }
 
 function render() {
@@ -301,11 +333,25 @@ function render() {
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   render();
-  liveOutput.scrollIntoView({ behavior: "smooth", block: "start" });
+  activateTab("outputs-tab");
+  activateSubtab("summary-output");
+  summaryOutput.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 form.addEventListener("input", render);
 form.addEventListener("change", render);
+
+tabButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    activateTab(button.dataset.tabTarget);
+  });
+});
+
+subtabButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    activateSubtab(button.dataset.subtabTarget);
+  });
+});
 
 downloadSummaryButton.addEventListener("click", () => {
   if (!latestSummaryDocument) {
